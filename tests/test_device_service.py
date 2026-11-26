@@ -32,8 +32,42 @@ def test_registration(service_and_repository) -> None:
 
     assert device.device_id == "router-01"
     assert device.status == "online"
+    assert service.get_device("router-01") == device
     assert service.get("router-01") == device
     assert service.list() == [device]
+
+
+def test_empty_device_summary(service_and_repository) -> None:
+    service, _ = service_and_repository
+
+    summary = service.get_device_summary()
+
+    assert summary.total_devices == 0
+    assert summary.online_count == 0
+    assert summary.offline_count == 0
+    assert summary.device_types == []
+
+
+def test_device_summary_counts_statuses_and_sorts_unique_types(service_and_repository) -> None:
+    service, _ = service_and_repository
+    service.register(make_device(device_id="router-01"))
+    service.register(make_device(device_id="router-02", status="offline"))
+    service.register(
+        DeviceCreate(
+            device_id="switch-01",
+            name="Office switch",
+            device_type="switch",
+            ip_address="192.168.1.11",
+            status="online",
+        )
+    )
+
+    summary = service.get_device_summary()
+
+    assert summary.total_devices == 3
+    assert summary.online_count == 2
+    assert summary.offline_count == 1
+    assert summary.device_types == ["router", "switch"]
 
 
 def test_duplicate_registration_raises_device_already_exists(service_and_repository) -> None:

@@ -2,7 +2,7 @@
 
 A small modular FastAPI service for registering and managing network devices. Routes handle HTTP requests, the service layer applies device rules, the repository keeps data in memory, and the events module creates alerts when a device goes offline.
 
-Device and alert data is stored only in process memory. It is shared across requests while the application is running and resets when the server restarts. No database is required.
+Device and alert data is stored only in process memory and shared across requests. Restarting the server clears both collections. No database is required.
 
 ## Setup
 

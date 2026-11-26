@@ -1,0 +1,19 @@
+from typing import Protocol
+
+from app.models import AlertResponse, DeviceResponse, DeviceStatus, StatusUpdate
+
+
+class DeviceRepository(Protocol):
+	def add_device(self, device: DeviceResponse) -> DeviceResponse: ...
+
+	def list_devices(self) -> list[DeviceResponse]: ...
+
+	def get_device(self, device_id: str) -> DeviceResponse | None: ...
+
+	def update_status(
+		self, device_id: str, status: DeviceStatus | StatusUpdate
+	) -> DeviceResponse | None: ...
+
+	def save_alert(self, alert: AlertResponse) -> AlertResponse: ...
+
+	def list_alerts(self) -> list[AlertResponse]: ...
